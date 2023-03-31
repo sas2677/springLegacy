@@ -20,7 +20,7 @@
 	function loadList(){  //서버와 통신:게시판 리스트 가져오기
 		
 		$.ajax({
-			url:"boardList.do",
+			url:"board/all",
 			type:"get",
 			dataType:"json",
 			success:makeView, //콜백함수
@@ -32,36 +32,32 @@
 	function makeView(data){
 		var listHtml ="<table class='table table-bordered'>";
 		listHtml+="<tr>"
-		listHtml+="<td>번호</td>"
-		listHtml+="<td>제목</td>"
-		listHtml+="<td>작성자</td>"
-		listHtml+="<td>작성일</td>"
-		listHtml+="<td>조회수</td>"
+		listHtml+="<td>번호</td>";
+		listHtml+="<td>제목</td>";
+		listHtml+="<td>작성자</td>";
+		listHtml+="<td>작성일</td>";
+		listHtml+="<td>조회수</td>";
 		listHtml+="</tr>";
 		
 		$.each(data,function(index,obj){
 			listHtml+="<tr>"
-			listHtml+="<td>"+obj.idx+"</td>"
-			listHtml+="<td id='t"+obj.idx+"'><a href='javascript:goContent("+obj.idx+")'>"+obj.title+"</a></td>"
-			listHtml+="<td>"+obj.writer+"</td>"
-			listHtml+="<td>"+obj.indate+"</td>"
-			listHtml+="<td>"+obj.count+"</td>"
+			listHtml+="<td>"+obj.idx+"</td>";
+			listHtml+="<td id='t"+obj.idx+"'><a href='javascript:goContent("+obj.idx+")'>"+obj.title+"</a></td>";
+			listHtml+="<td>"+obj.writer+"</td>";
+			listHtml+="<td>"+obj.indate.split(' ')[0]+"</td>";
+			listHtml+="<td id='cnt"+obj.idx+"'>"+obj.count+"</td>";
 			listHtml+="</tr>";		
 			
 			listHtml+="<tr id='c"+obj.idx+"' style='display:none'>";
 			listHtml+="<td>내용</td>";
 			listHtml+="<td colspan='4'>";
-			listHtml+="<textarea  id='ta"+obj.idx+"' readonly rows='7' class='form-control'>"+obj.content+"</textarea>";
+			listHtml+="<textarea  id='ta"+obj.idx+"' readonly rows='7' class='form-control'></textarea>";
 			listHtml+="<br/>";
-			listHtml+="<span id='ub"+obj.idx+"'><button class='btn btn-success btn-sm' onclick='goUpdateForm("+obj.idx+")'>수정화면</button><span>&nbsp;";
+			listHtml+="<span id='ub"+obj.idx+"'><button class='btn btn-success btn-sm' onclick='goUpdateForm("+obj.idx+")'>수정화면</button></span>&nbsp";
 			listHtml+="<button class='btn btn-warning btn-sm' onclick='goDelete("+obj.idx+")'>삭제</button>";
 			listHtml+="</td>";
 			listHtml+="</tr>";
-			
-			
-			
 		});
-		
 		
 			listHtml+="<tr>"
 			listHtml+="<td colspan='5'>"
@@ -100,8 +96,7 @@
 
 			var fData=$("#frm").serialize();//직렬화[객체를 데이터스트림으로 만드는것]
 			$.ajax({
-				
-				url:"boardInsert.do",
+				url:"board/new",
 				type:"post",
 				data:fData,
 				success:loadList,
@@ -114,10 +109,20 @@
 			$("#fclear").trigger("click");
 			
 		}
-	
 	//상세보기
 	function goContent(idx){//"obj.idx"
 		if($("#c"+idx).css("display")=="none"){
+			
+			$.ajax({
+				url:"board/"+idx,
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					$("#ta"+idx).val(data.content);
+					
+				},
+				error:function(){alert("error");}
+			});
 			
 			$("#c"+idx).css("display","table-row");// 보이게 설정
 			$("#ta"+idx).attr("readonly",true); //읽기전용으로 설정
@@ -126,6 +131,17 @@
 		}else{
 			
 			$("#c"+idx).css("display","none");// 감추게 설정
+			 $.ajax({
+				 url:"board/count/"+idx,
+				 type:"put",
+				 dataType:"json",
+				 success: function(data){
+					 
+					 $("#cnt"+idx).text(data.count);
+				 },
+				 error:function(){alert("error"); }
+				 
+			 });
 			
 		}
 	}
@@ -133,9 +149,8 @@
 	//삭제
 	function goDelete(idx){
 		$.ajax({
-			url:"boardDelete.do",
-			type:"get",
-			data:{"idx":idx},
+			url:"board/"+idx,
+			type:"delete",
 			success:loadList,
 			error: function(){alert("error");}
 		});
@@ -144,16 +159,30 @@
 	//수정
 	function goUpdateForm(idx){ 
 		$("#ta"+idx).attr("readonly",false); //1
+		
 		var title=$("#t"+idx).text();
-		var newInput = "<input type='text' class='form-control' value='"+title+"'/>";
+		var newInput = "<input type='text' id='nt"+idx+"' class='form-control' value='"+title+"'/>";
 		$("#t"+idx).html(newInput); //2	//수정화면 버튼을 눌렀을때 있던 데이터를 가져오고 수정 페이지로 넘어감 
 		
-		var newbutton="<button class='btn btn-primary btn-sm'>수정</button>"
+		var newbutton="<button class='btn btn-primary btn-sm' onclick='goUpdate("+idx+")'>수정</button>"
 		$("#ub"+idx).html(newbutton); //3  //수정화면 버튼을 눌렀을때 수정버튼으로 바뀜 
 		
-		
-		
 	}
+		function goUpdate(idx){
+			var title=$("#nt"+idx).val();
+			var content=$("#ta"+idx).val();
+			
+			$.ajax({
+				url:"board/update",
+				type:"put",
+				contentType:'application/json;charset=utf-8',
+				data: JSON.stringify({"idx":idx,"title":title,"content":content}),
+				success:loadList,
+				error:function(){ alert("error"); }
+			});
+		}
+		
+	
 		
 	
    </script>
