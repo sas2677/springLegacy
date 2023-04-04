@@ -12,62 +12,44 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-
 $(document).ready(function(){
 	
 	if(${!empty msgType}){
-			$("#messageType").attr("class","modal-content panel-success"); 
+			$("#messageType").attr("class","modal-content panel-warning"); 
 			$("#MyMessage").modal("show");
 	}	
 });
 
-</script>
 
+</script>
 
 </head>
 <body>
-
-  
 <div class="container">
-<jsp:include page="common/header.jsp"/>
-  <c:if test="${empty loginuser}">
+<jsp:include page="../common/header.jsp"/>
   <h2>Spring MVC03</h2>
-  </c:if>
-  
-  <c:if test="${!empty loginuser}">
-  <label>[사진]${loginuser.memName}님 방문을 환영합니다.</label>
-  </c:if>
- <div class="panel panel-default">
-   <div>
- 	<img src="${contextPath}/resources/images/main.png" style="width: 100%; height: 400px;">
-   </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">로그인 화면</div>
     <div class="panel-body">
-  		<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-  <li><a data-toggle="tab" href="#menu1">게시판</a></li>
-  <li><a data-toggle="tab" href="#menu2">공지사항</a></li>
-</ul>
-
-<div class="tab-content">
-  <div id="home" class="tab-pane fade in active">
-    <h3>HOME</h3>
-    <p>Some content.</p>
-  </div>
-  <div id="menu1" class="tab-pane fade">
-    <h3>게시판</h3>
-    <p>Some content in menu 1.</p>
-  </div>
-  <div id="menu2" class="tab-pane fade">
-    <h3>공지사항</h3>
-    <p>Some content in menu 2.</p>
-  </div>
-</div>
+    	<form name="frm" action="${contextPath}/memLogin.do" method="post">
+			<table class="table table-bordered" style="text-align: center; border: 1px solid #dddddd;">
+    			<tr>
+					<td style="width: 110px; vertical-align: middle;">아이디</td>    
+					<td><input id="memID" name="memID" class="form-control" type="text" maxlength="20" placeholder="아이디를 입력하세요"/></td>    
+    			</tr>
+    			<tr>
+					<td style="width: 110px; vertical-align: middle;">비밀번호</td>    
+					<td colspan="2"><input id="memPassword" name="memPassword" class="form-control" onkeyup="passwordCheck()" type="password" maxlength="20" placeholder="비밀번호를 입력하세요"/></td>    
+    			</tr>
+    			<tr>
+					<td colspan="2" style="text-align: left">
+						<input type="submit" class="btn btn-primary btn-sm pull-right" value="로그인" />
+					</td>    			   
+    			</tr>     
+			</table>    
+    	</form>
     </div>
-    <div class="panel-footer">스프1탄</div>
-  </div>
-</div>
-
-	 <!-- 성공 메세지(Modal) -->
+     <!-- 실패 메세지(Modal) -->
 			<div id="MyMessage" class="modal fade" role="dialog">
 				<div class="modal-dialog">
 
@@ -88,6 +70,9 @@ $(document).ready(function(){
 
 				</div>
 			</div>
-
+    
+    <div class="panel-footer">스프1탄</div>
+  </div>
+</div>
 </body>
-</html>
+</html>  
