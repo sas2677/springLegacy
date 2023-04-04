@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kr.co.pro.mapper.MemberMapper">
+	<!-- 로그인 중복 -->
+	<select id="registerCheck" resultType="kr.co.pro.Entity.Member">
+	 select * from mem_tbl where memID=#{memID}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="register" parameterType="kr.co.pro.Entity.Member">
+		insert into mem_tbl(memID,memPassword,memName,memAge,memGender, memEmail, memProfile)
+			values(#{memID},#{memPassword},#{memName},#{memAge},#{memGender},#{memEmail},#{memProfile})
+	</insert>
+	<!-- 로그인 처리 -->
+	<select id="memLogin" parameterType="kr.co.pro.Entity.Member" resultType="kr.co.pro.Entity.Member">
+	 select * from mem_tbl where memID=#{memID} and memPassword=#{memPassword}
+	</select>
+</mapper>
