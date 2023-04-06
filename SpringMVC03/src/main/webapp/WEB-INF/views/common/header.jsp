@@ -11,40 +11,40 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="#">스프1탄</a>
+      <span class="navbar-brand">스프1탄</span>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="${contextPath}/">Home</a></li>
         <li><a href="/boardMain.do">게시판</a></li>
-        <li><a href="#">Page 2</a></li>
       </ul>
       
      <c:if test="${empty loginuser}">
-      <ul class="nav navbar-nav navbar-right">
-       <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">접속하기<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="${contextPath}/memLoginForm.do">로그인</a></li>
-            <li><a href="${contextPath}/memJoin.do">회원가입</a></li>
+     	 <ul class="nav navbar-nav navbar-right">
+            <li><a href="${contextPath}/memLoginForm.do"><span class="glyphicon glyphicon-log-in"></span>로그인</a></li>
+            <li><a href="${contextPath}/memJoin.do"><span class="glyphicon glyphicon-user"></span>회원가입</a></li>
           </ul>
-        </li>
-      </ul>
      </c:if>
      <c:if test="${!empty loginuser}">
       <div style="color: white; display: flex; justify-content: right; height:50px; align-items:center;" >
-     	<span style="font-size: 20px;">${loginuser.memID}님</span>
+     	
      
       <ul class="nav navbar-nav navbar-right ">
-       <li class="dropdown" style="display: inline-block;">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">회원관리<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="${contextPath}/memUpdateForm.do">회원정보수정</a></li>
-            <li><a href="#">프로필사진등록</a></li>
-            <li><a href="${contextPath}/memLogout.do">로그아웃</a></li>
+            <li><a href="${contextPath}/memUpdateForm.do"><span class="glyphicon glyphicon-wrench"></span>회원정보수정</a></li>
+            <li><a href="${contextPath}/memImageForm.do"><span class="glyphicon glyphicon-picture"></span>사진등록</a></li>
+            <li><a href="${contextPath}/memLogout.do"><span class="glyphicon glyphicon-log-out"></span>로그아웃</a></li>
+           <c:if test="${!empty loginuser}">
+			  	<c:if test="${loginuser.memProfile eq ''}">
+			  		<li><img src="${contextPath}/resources/images/main.png" style = "width: 50px; height: 50px; border-radius: 50%"/>${loginuser.memName}님 ㅎㅇ</li>
+			  	</c:if>
+			  	
+			  	<c:if test="${loginuser.memProfile ne ''}">
+			  		<li><img src="${contextPath}/resources/upload/${loginuser.memProfile}" style = "width: 50px; height: 50px; border-radius: 50%"/>${loginuser.memName}님 ㅎㅇ</li>
+			  	</c:if>
+ 		 </c:if>
+          
+          
           </ul>
-        </li>
-      </ul>
       </div>
      </c:if>    
     </div>

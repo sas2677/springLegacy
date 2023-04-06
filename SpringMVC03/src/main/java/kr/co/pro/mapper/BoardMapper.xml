@@ -9,7 +9,7 @@
 	
 	<!--글 작성 -->
 	<insert id="boardInsert" parameterType="kr.co.pro.Entity.Board">
-		insert into myboard(title,content,writer) values(#{title},#{content},#{writer})
+		insert into myboard(memID,title,content,writer) values(#{memID},#{title},#{content},#{writer})
 	</insert>
 	
 	<!--상세보기 -->
