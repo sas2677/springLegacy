@@ -17,4 +17,13 @@ public interface MemberMapper {
 	//로그인
 	public Member memLogin(Member mvo);
 	
+	//회원정보 수정
+	public int memUpdate(Member mvo);
+	
+	//회원사진 
+	public Member getMember(String memID);
+	
+	//회원사진 업데이트
+	public void memProfileUpdate(Member mvo);
+	
 }

@@ -15,4 +15,23 @@
 	<select id="memLogin" parameterType="kr.co.pro.Entity.Member" resultType="kr.co.pro.Entity.Member">
 	 select * from mem_tbl where memID=#{memID} and memPassword=#{memPassword}
 	</select>
+	
+	<!-- 회원정보 수정 -->
+	<update id="memUpdate" parameterType="kr.co.pro.Entity.Member">
+		update mem_tbl set memPassword =#{memPassword},memName =#{memName},
+					memAge =#{memAge},memGender =#{memGender},memEmail =#{memEmail}
+					where memID =#{memID}
+	</update>
+	
+	<!-- 회원 사진 등록 -->
+	<select id="getMember" resultType="kr.co.pro.Entity.Member">
+		select * from mem_tbl where memID=#{memID}
+	</select>
+	
+	
+	<!-- 회원 사진 업데이트 -->
+	<update id="memProfileUpdate" parameterType="kr.co.pro.Entity.Member">
+		update mem_tbl set memProfile=#{memProfile} where memID=#{memID}
+	
+	</update>
 </mapper>
