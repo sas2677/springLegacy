@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kr.co.pro.mapper.MemberMapper">
+	<!-- 로그인 중복 -->
+	<select id="registerCheck" resultType="kr.co.pro.Entity.Member">
+	 select * from mem_tbl where memID=#{memID}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="register" parameterType="kr.co.pro.Entity.Member">
+		insert into mem_stbl(memIdx,memID,memPassword,memName,memAge,memGender, memEmail, memProfile)
+			values((select IFNULL(MAX(memIdx)+1,1)from mem_stbl mem),#{memID},#{memPassword},#{memName},#{memAge},#{memGender},#{memEmail},#{memProfile})
+	</insert>
+	<!-- 로그인 처리 -->
+	<select id="memLogin" parameterType="kr.co.pro.Entity.Member" resultType="kr.co.pro.Entity.Member">
+	 select * from mem_tbl where memID=#{memID} and memPassword=#{memPassword}
+	</select>
+	
+	<!-- 회원정보 수정 -->
+	<update id="memUpdate" parameterType="kr.co.pro.Entity.Member">
+		update mem_tbl set memPassword =#{memPassword},memName =#{memName},
+					memAge =#{memAge},memGender =#{memGender},memEmail =#{memEmail}
+					where memID =#{memID}
+	</update>
+	
+	<!-- 회원 사진 등록 -->
+	<select id="getMember" resultType="kr.co.pro.Entity.Member">
+		select * from mem_stbl where memID=#{memID}
+	</select>
+	
+	
+	<!-- 회원 사진 업데이트 -->
+	<update id="memProfileUpdate" parameterType="kr.co.pro.Entity.Member">
+		update mem_tbl set memProfile=#{memProfile} where memID=#{memID}
+	
+	</update>
+	
+	<insert id="authInsert" parameterType="kr.co.pro.Entity.AuthVO">
+		insert into mem_auth(memID,auth) values(#{memID},#{auth})
+	</insert>
+</mapper>
