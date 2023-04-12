@@ -1,4 +1,4 @@
-package kr.co.pro.config;
+ package kr.co.pro.config;
 
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;

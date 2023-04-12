@@ -27,7 +27,7 @@ $(document).ready(function(){
 <body>
 <div class="container">
 <jsp:include page="../common/header.jsp"/>
-  <h2>Spring MVC04</h2>
+  <h2>Spring MVC05</h2>
   <div class="panel panel-default">
     <div class="panel-heading">로그인 화면</div>
     <div class="panel-body">

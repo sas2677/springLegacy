@@ -97,8 +97,9 @@ public class MemberController {
 			rttr.addFlashAttribute("msg", "회원가입을 축하합니다.");
 			System.out.println(m.toString());
 			//회원가입이 성공하면 =>로그인처리하기
-		Member mvo= membermapper.getMember(m.getMemID());
-			session.setAttribute("loginuser", m);//로그인
+			Member mvo= membermapper.getMember(m.getMemID());
+			System.out.println(mvo);
+			session.setAttribute("loginuser", mvo);//로그인
 			return "redirect:/";
 		}else {
 			rttr.addFlashAttribute("msgType", "에러 메세지");
@@ -134,7 +135,8 @@ public class MemberController {
 			return "redirect:/memLoginForm.do";
 		}
 			Member mvo=membermapper.memLogin(m);
-			if(mvo!=null) {  //로그인 성공
+			//추가:비밀번호 일치 여부 
+			if(mvo!=null && pwEncoder.matches(m.getMemPassword(), mvo.getMemPassword())) {  //로그인 성공
 				rttr.addFlashAttribute("msgType","성공메세지");
 				rttr.addFlashAttribute("msg","로그인이 되었습니다.");
 				session.setAttribute("loginuser", mvo);
@@ -166,7 +168,7 @@ public class MemberController {
 			   memPassword==null||memPassword.equals("")||
 			   memPassword2==null||memPassword2.equals("")||
 			   m.getMemName()==null||m.getMemName().equals("")||	
-			   m.getMemAge()== 0||
+			   m.getMemAge()== 0||m.getAuthList().size()==0||
 			   m.getMemGender()==null||m.getMemGender().equals("")||	
 			   m.getMemEmail()==null||m.getMemEmail().equals("")) {
 					//누락메세지를 가지고 가기? => 객체바인딩(Model, HttpServletRequest, HttpSession)
@@ -186,8 +188,24 @@ public class MemberController {
 				
 			
 				//회원 수정하기
+				//추가:비밀번호 암호화 추가 
+				String encypyPw= pwEncoder.encode(m.getMemPassword());
+				m.setMemPassword(encypyPw);
 				int result=membermapper.memUpdate(m);
 				if(result==1) { //회원 수정성공 메세지 
+					//기존 권한을 삭제하고 
+					membermapper.authDelete(m.getMemID());
+					
+					//새로운 권한을 추가 
+					List<AuthVO> list=m.getAuthList();
+					for(AuthVO authVO:list) {
+						if(authVO.getAuth()!=null) {
+								AuthVO saveVO=new AuthVO();
+								saveVO.setMemID(m.getMemID());
+								saveVO.setAuth(authVO.getAuth());
+								membermapper.authInsert(saveVO);
+						}
+					}
 					rttr.addFlashAttribute("msgType", "성공 메세지");
 					rttr.addFlashAttribute("msg", "회원정보가 수정되었습니다.");
 					System.out.println(m.toString());

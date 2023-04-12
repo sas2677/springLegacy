@@ -27,19 +27,33 @@
      </c:if>
      <c:if test="${!empty loginuser}">
       <div style="color: white; display: flex; justify-content: right; height:50px; align-items:center;" >
-     	
-     
       <ul class="nav navbar-nav navbar-right ">
             <li><a href="${contextPath}/memUpdateForm.do"><span class="glyphicon glyphicon-wrench"></span>회원정보수정</a></li>
             <li><a href="${contextPath}/memImageForm.do"><span class="glyphicon glyphicon-picture"></span>사진등록</a></li>
             <li><a href="${contextPath}/memLogout.do"><span class="glyphicon glyphicon-log-out"></span>로그아웃</a></li>
            <c:if test="${!empty loginuser}">
 			  	<c:if test="${empty loginuser.memProfile}">
-			  		<li><img src="${contextPath}/resources/images/main.png" style = "width: 50px; height: 50px; border-radius: 50%"/>${loginuser.memName}님</li>
+			  		<li><img src="${contextPath}/resources/images/main.png" style = "width: 50px; height: 50px; border-radius: 50%"/>${loginuser.memName}님
+			  		(
+			  			<c:forEach var="authVO" items="${loginuser.authList}">
+			  				<c:if test="${authVO.auth eq 'ROLE_USER'}">U</c:if>
+			  				<c:if test="${authVO.auth eq 'ROLE_MANAGER'}">M</c:if>
+			  				<c:if test="${authVO.auth eq 'ROLE_ADMIN'}">A</c:if>
+			  			</c:forEach>
+			  		
+			  		)</li>
 			  	</c:if>
 			  	
 			  	<c:if test="${!empty loginuser.memProfile}">
-			  		<li><img src="${contextPath}/resources/upload/${loginuser.memProfile}" style = "width: 50px; height: 50px; border-radius: 50%"/>${loginuser.memName}님</li>
+			  		<li><img src="${contextPath}/resources/upload/${loginuser.memProfile}" style = "width: 50px; height: 50px; border-radius: 50%"/>${loginuser.memName}님
+			  		(
+			  			<c:forEach var="authVO" items="${loginuser.authList}">
+			  				<c:if test="${authVO.auth eq 'ROLE_USER'}">U</c:if>
+			  				<c:if test="${authVO.auth eq 'ROLE_MANAGER'}">M</c:if>
+			  				<c:if test="${authVO.auth eq 'ROLE_ADMIN'}">A</c:if>
+			  			</c:forEach>
+			  		
+			  		)</li>
 			  	</c:if>
  		 </c:if>
           </ul>
