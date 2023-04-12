@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="kr.co.pro.mapper.MemberMapper">
+	<resultMap type="kr.co.pro.Entity.Member" id="memberMap">
+		<id property="memIdx" column="memIdx"/>
+		<result property="memID" column="memID"/>
+		<result property="memPassword" column="memPassword"/>
+		<result property="memName" column="memName"/>
+		<result property="memAge" column="memAge"/>
+		<result property="memGender" column="memGender"/>
+		<result property="memEmail" column="memEmail"/>
+		<result property="memProfile" column="memProfile"/>
+		<collection property="authList" resultMap="authMap">
+		</collection>
+	</resultMap>
+	
+	<resultMap type="kr.co.pro.Entity.AuthVO" id="authMap">
+		<id property="no" column="no"/>
+		<result property="memID" column="memID"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<!-- 로그인 중복 -->
+	<select id="registerCheck" resultType="kr.co.pro.Entity.Member">
+	 select * from mem_stbl where memID=#{memID}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="register" parameterType="kr.co.pro.Entity.Member">
+		insert into mem_stbl(memIdx,memID,memPassword,memName,memAge,memGender, memEmail, memProfile)
+			values((select IFNULL(MAX(memIdx)+1,1)from mem_stbl mem),#{memID},#{memPassword},#{memName},#{memAge},#{memGender},#{memEmail},#{memProfile})
+	</insert>
+	<!-- 로그인 처리 -->
+	<select id="memLogin" parameterType="kr.co.pro.Entity.Member" resultMap="memberMap">
+	 select * from mem_stbl mem LEFT OUTER JOIN mem_auth auth on
+	  		mem.memID=auth.memID where mem.memID=#{memID} 
+	</select>
+	
+	<!-- 회원정보 수정 -->
+	<update id="memUpdate" parameterType="kr.co.pro.Entity.Member">
+		update mem_stbl set memPassword =#{memPassword},memName =#{memName},
+					memAge =#{memAge},memGender =#{memGender},memEmail =#{memEmail}
+					where memID =#{memID}
+	</update>
+	
+	<!-- 회원 사진 등록(회원권한 join) -->
+	<select id="getMember" resultMap="memberMap">
+		select * from mem_stbl mem LEFT OUTER JOIN mem_auth auth on
+			 mem.memID=auth.memID  where mem.memID=#{memID}
+	</select>
+	
+	
+	<!-- 회원 사진 업데이트 -->
+	<update id="memProfileUpdate" parameterType="kr.co.pro.Entity.Member">
+		update mem_stbl set memProfile=#{memProfile} where memID=#{memID}
+	
+	</update>
+	
+	<insert id="authInsert" parameterType="kr.co.pro.Entity.AuthVO">
+		insert into mem_auth(memID,auth) values(#{memID},#{auth})
+	</insert>
+	
+	<delete id="authDelete">
+		delete from mem_auth where memID=#{memID}
+	</delete>
+</mapper>
